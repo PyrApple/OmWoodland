@@ -63,6 +63,7 @@
 (cffi:defcfun  ("OmWoodlandConvolveInputToOutput" convolve-input-to-output-cfun) :void ; return void
   ( audiob-in  (:pointer (:struct audiobuffer-struct) ) )
   ( audiob-out (:pointer (:struct audiobuffer-struct) ) )
+  ( node-id :unsigned-int )
 )
 
 
@@ -76,7 +77,7 @@
 
   (let* ( (c-nodes-pos (allocate-list-of-list nodes-pos))
         )
-
+        (print "running simulate-propagation")
         (unwind-protect
           (progn
             ; init c sampling rate
@@ -98,17 +99,24 @@
 
                   (unwind-protect
                     (progn
-                    ; generate sound from IR and store in in output audio buffer
-                    (  convolve-input-to-output-cfun c-audiobuffer-in c-audiobuffer-out ) 
-                    ; fill in om sound buffer with data values from audio-buffer
-                    (dotimes (c n-channels-out)
-                      (dotimes (smp n-samples-out)
-                        (setf (fli:dereference (fli:dereference (om-sound-buffer-ptr (buffer om-sound-out)) :index c :type :pointer)
-                                               :index smp :type :float)
-                              (fli:dereference (fli:dereference (cffi:foreign-slot-value c-audiobuffer-out '(:struct audiobuffer-struct) 'data) :index c :type :pointer) :index smp :type :float)
-                              )))
 
-                    om-sound-out ; return om-sound                  
+                      (loop for node-id from 1 to (length nodes-pos) do 
+
+                        ; generate sound from IR and store in in output audio buffer
+                        (  convolve-input-to-output-cfun c-audiobuffer-in c-audiobuffer-out node-id ) 
+                        ; fill in om sound buffer with data values from audio-buffer
+                        (dotimes (c n-channels-out)
+                          (dotimes (smp n-samples-out)
+                            (setf (fli:dereference (fli:dereference (om-sound-buffer-ptr (buffer om-sound-out)) :index c :type :pointer)
+                                                   :index smp :type :float)
+                                  (fli:dereference (fli:dereference (cffi:foreign-slot-value c-audiobuffer-out '(:struct audiobuffer-struct) 'data) :index c :type :pointer) :index smp :type :float)
+                                  )))
+
+                        ; collect (clone-object om-sound-out) ; seems to keep same buffer across clones
+                        collect (make-om-sound-hard-copy om-sound-out)
+
+                      )
+
                     
                     )
                     ; cleanup forms
@@ -134,20 +142,44 @@
 ; MISC.
 ; make instance of om-sound and associated sound buffer 
 (defun make-om-sound-instance ( n-channels-out n-samples-out sample-rate-out )
-            ; create an om-sound-buffer used for output
-            (let* ( (om-buffer-out (make-om-sound-buffer-gc 
-                            :nch n-channels-out
-                            :ptr (make-audio-buffer n-channels-out n-samples-out)))
-                  )
+  ; create an om-sound-buffer used for output
+  (let* ( (om-buffer-out (make-om-sound-buffer-gc 
+                  :nch n-channels-out
+                  :ptr (make-audio-buffer n-channels-out n-samples-out)))
+        )
 
-                  ; create associated om-sound, used to fill output list
-                  (om-init-instance (make-instance 'sound :buffer om-buffer-out
-                                                   :n-samples n-samples-out
-                                                   :n-channels n-channels-out
-                                                   :sample-rate sample-rate-out )
-                                    `((:file , nil)))
-            )
+        ; create associated om-sound, used to fill output list
+        (om-init-instance (make-instance 'sound :buffer om-buffer-out
+                                         :n-samples n-samples-out
+                                         :n-channels n-channels-out
+                                         :sample-rate sample-rate-out )
+                          `((:file , nil)))
+  )
 )
+
+(defun make-om-sound-hard-copy (om-sound-in)
+  (let* ( (om-sound-out (make-om-sound-instance (n-channels om-sound-in) (n-samples om-sound-in) (sample-rate om-sound-in)))
+          (ptr-in  (oa::om-pointer-ptr (buffer om-sound-in)))
+          (ptr-out (oa::om-pointer-ptr (buffer om-sound-out)))
+        )
+
+        (loop for ch from 0 below (n-channels om-sound-in) do
+        ;   (let  ( (ch-ptr-in (om-read-ptr  (om-sound-buffer-ptr (buffer om-sound-in) ) ch :pointer))
+        ;           (ch-ptr-out (om-read-ptr (om-sound-buffer-ptr (buffer om-sound-out)) ch :pointer))
+        ;         )
+
+                (loop for i from 0 below (n-samples om-sound-in) do
+                  (setf 
+                    (fli:dereference (fli:dereference ptr-out :index ch :type :pointer) :index i :type :float)
+                    (fli:dereference (fli:dereference ptr-in  :index ch :type :pointer) :index i :type :float)
+                  )
+        ;           (setf (om-read-ptr ch-ptr-out i :float) (om-read-ptr ch-ptr-in i :float) ))
+        ;         )
+        ))
+        om-sound-out
+
+
+  ))
 
 ;;;======================================================================
 

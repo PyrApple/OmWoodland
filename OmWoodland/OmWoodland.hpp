@@ -95,9 +95,9 @@ void OmWoodlandSetSpeedGainRxThreshold( float speed, float gain, float rxThresho
 }
 
 OM_WOODLAND_API
-void OmWoodlandConvolveInputToOutput( OmAudioBuffer * const bufferIn, OmAudioBuffer * const bufferOut )
+void OmWoodlandConvolveInputToOutput( OmAudioBuffer * const bufferIn, OmAudioBuffer * const bufferOut, unsigned int nodeId )
 {
-    propagationHandler.ConvolveIR(bufferIn, bufferOut);
+    propagationHandler.ConvolveIR(bufferIn, bufferOut, nodeId);
 }
 
 
