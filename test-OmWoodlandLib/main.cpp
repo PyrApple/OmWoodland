@@ -19,16 +19,16 @@ OmListOfList getTopology(int numNodes){
     for (int i = 0; i < nodesPos.size1; ++i) {
         data[i] = new float[nodesPos.size2];
         
-//        for (int j = 0; j < nodesPos.size2; ++j) {
-//            if( j < 2 ) data[i][j] = i*j + i + (rand() % 100) / 100.f;
-//            else data[i][j] = 0.f;
-//        }
+        for (int j = 0; j < nodesPos.size2; ++j) {
+            if( j < 2 ) data[i][j] = i*j + i + (rand() % 100) / 100.f;
+            else data[i][j] = 0.f;
+        }
     }
     
-    data[0][0] = -8.27; data[0][1] = 8.4; data[0][2] = 0;
-    data[1][0] = -0.25; data[1][1] = -0.24; data[1][2] = 0;
-    data[2][0] = 7.99; data[2][1] = 8.65; data[2][2] = 0;
-    data[3][0] = 7.11; data[3][1] = -8.88; data[3][2] = 0;
+//    data[0][0] = -8.27; data[0][1] = 8.4; data[0][2] = 0;
+//    data[1][0] = -0.25; data[1][1] = -0.24; data[1][2] = 0;
+//    data[2][0] = 7.99; data[2][1] = 8.65; data[2][2] = 0;
+//    data[3][0] = 7.11; data[3][1] = -8.88; data[3][2] = 0;
     
     nodesPos.data = data;
     return nodesPos;
@@ -56,9 +56,9 @@ int main(int argc, const char * argv[]) {
 
     
     // create test inputs: misc.
-    int numNodes = 4;
+    int numNodes = 3;
     float speed = 10;
-    float gain = 0.6;
+    float gain = 0.9;
     float rxThreshold = 0.1;
     int sampleRate = 44100;
     float numSamplesIn = 300;

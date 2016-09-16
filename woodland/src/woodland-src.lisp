@@ -5,7 +5,7 @@
 
 ;;;======================================================================
 
-; STRUCT
+; DEFINE C STRUCTs
 
 ; OM-SOUND C STRUCT
 (cffi:defcstruct audiobuffer-struct
@@ -36,7 +36,7 @@
 
 ;;;======================================================================
 
-; MAIN
+; DEFINE C FUNCTIONS
 
 (cffi:defcfun  ("OmWoodlandRegisterTopology" register-topology-cfun) :void ; return void
   ( posnodes (:pointer (:struct list-struct) ) )
@@ -56,8 +56,6 @@
   ( rx-threshold :float )
 )
 
-
-
 (cffi:defcfun  ("OmWoodlandGetMaxPropagationTime" get-max-propagation-time-cfun) :float) ; return float
 
 (cffi:defcfun  ("OmWoodlandConvolveInputToOutput" convolve-input-to-output-cfun) :void ; return void
@@ -66,15 +64,21 @@
   ( node-id :unsigned-int )
 )
 
+;;;======================================================================
+
+; MAIN
 
 (defmethod* simulate-propagation ( om-sound-in nodes-pos emitter-id propag-speed propag-gain propag-rx-threshold)
-  :icon '(347)
+  ; :icon '(347)
   :menuins '()
   :indoc '("om-sound" "nodes-pos" "emitter-id (start from 1)" "speed" "gain" "rx-theshold")
   :outdoc '("")
   :initvals '(nil ((0 0 0)(1 1 0)) 1 343 0.9 0.1)
   :doc "simulate propagation"
 
+  (if (or (or (or (<= propag-speed 0) (or (>= propag-gain 1) (<= propag-gain 0)) ) (or (> emitter-id (length nodes-pos)) (< emitter-id 1) ) ) (< propag-rx-threshold 0.001) ) 
+  (om-beep-msg "Error: wrong input param value, must compy to: ~%* propag speed > 0 ~%* propag gain in ]0 1] ~%* emitter-id in [1 (length nodes-pos)]  ~%* rx threshold >= 0.001")
+  
   (let* ( (c-nodes-pos (allocate-list-of-list nodes-pos))
         )
         (print "running simulate-propagation")
@@ -82,7 +86,7 @@
           (progn
             ; init c sampling rate
             ( set-sample-rate-cfun  (sample-rate om-sound-in) )
-            ( set-speed-gain-rxThresh-cfun (coerce propag-speed 'float) propag-gain propag-rx-threshold )
+            ( set-speed-gain-rxThresh-cfun (coerce propag-speed 'float) (coerce propag-gain 'float) (coerce propag-rx-threshold 'float) )
             ; register topology from input positions
             ( register-topology-cfun c-nodes-pos )
             ; simulate propagation (generate propagation tree + per-node IR etc.)
@@ -134,12 +138,13 @@
             (free-list-of-list c-nodes-pos (length nodes-pos) )
           )
         )
-  )
+  ))
 )
 
 ;;;======================================================================
 
 ; MISC.
+
 ; make instance of om-sound and associated sound buffer 
 (defun make-om-sound-instance ( n-channels-out n-samples-out sample-rate-out )
   ; create an om-sound-buffer used for output
@@ -157,6 +162,7 @@
   )
 )
 
+; create a hard copy of a sound (i.e. also duplicate its associated sound buffer)
 (defun make-om-sound-hard-copy (om-sound-in)
   (let* ( (om-sound-out (make-om-sound-instance (n-channels om-sound-in) (n-samples om-sound-in) (sample-rate om-sound-in)))
           (ptr-in  (oa::om-pointer-ptr (buffer om-sound-in)))
@@ -164,21 +170,13 @@
         )
 
         (loop for ch from 0 below (n-channels om-sound-in) do
-        ;   (let  ( (ch-ptr-in (om-read-ptr  (om-sound-buffer-ptr (buffer om-sound-in) ) ch :pointer))
-        ;           (ch-ptr-out (om-read-ptr (om-sound-buffer-ptr (buffer om-sound-out)) ch :pointer))
-        ;         )
-
                 (loop for i from 0 below (n-samples om-sound-in) do
                   (setf 
                     (fli:dereference (fli:dereference ptr-out :index ch :type :pointer) :index i :type :float)
                     (fli:dereference (fli:dereference ptr-in  :index ch :type :pointer) :index i :type :float)
                   )
-        ;           (setf (om-read-ptr ch-ptr-out i :float) (om-read-ptr ch-ptr-in i :float) ))
-        ;         )
         ))
         om-sound-out
-
-
   ))
 
 ;;;======================================================================
@@ -258,25 +256,6 @@
 
 ;;;======================================================================
 
-; LISP-LIST C STRUCT RELATED FUNCTIONS
-
-; convert lisp list to c-ready list structure, allocating foreign values
-(defun allocate-list (list-in) 
-  (let* ( (list-type-in (cffi::foreign-alloc 'list-type)) )
-      (setf (cffi:foreign-slot-value list-type-in '(:struct list-struct) 'size) (length list-in))
-      (setf (cffi:foreign-slot-value list-type-in '(:struct list-struct) 'data) (cffi:foreign-alloc :float :initial-contents list-in))
-      list-type-in
-    )
-)
-
-; free pointer values allocated in allocate-list
-(defun free-list (list-type-in)
-    ( cffi::foreign-free (cffi:foreign-slot-value list-type-in '(:struct list-struct) 'data) )
-    ( cffi::foreign-free list-type-in )
-)
-
-;;;======================================================================
-
 ; OM-LIST-OF-LIST C STRUCT RELATED FUNCTIONS
 
 (defun number-to-double (i) (coerce i 'double-float))
@@ -288,7 +267,7 @@
     (:float (mapcar #'number-to-float liste))
     (otherwise nil)))
 
-; allocate audio buffer structure fields from input om-sound data
+; allocate list of list structure fields from input om-sound data
 (defun allocate-list-of-list ( list-in ) 
 (let* ( (lol (cffi::foreign-alloc 'list-of-list-type)) 
         (size1 (length list-in))
@@ -309,7 +288,7 @@
       )
 ))
 
-; free audio buffer
+; free list of list
 (defun free-list-of-list (lol size1)
   (when size1 (dotimes (c size1) (fli::free-foreign-object (fli:dereference (cffi:foreign-slot-value lol '(:struct list-of-list-struct) 'data) :type :pointer :index c))))
   (cffi::foreign-free lol)

@@ -89,9 +89,9 @@ void OmWoodlandSetSampleRate( unsigned int sampleRate )
 OM_WOODLAND_API
 void OmWoodlandSetSpeedGainRxThreshold( float speed, float gain, float rxThreshold)
 {
-    propagationHandler.PROPAGATION_SPEED = speed;
-    propagationHandler.PROPAGATION_GAIN = gain;
-    propagationHandler.RX_GAIN_THRESHOLD = rxThreshold;
+    propagationHandler.propagationSpeed = speed;
+    propagationHandler.propagationGain = gain;
+    propagationHandler.propagationRxGainThreshold = rxThreshold;
 }
 
 OM_WOODLAND_API
@@ -100,36 +100,4 @@ void OmWoodlandConvolveInputToOutput( OmAudioBuffer * const bufferIn, OmAudioBuf
     propagationHandler.ConvolveIR(bufferIn, bufferOut, nodeId);
 }
 
-
-
-
-
-
 #endif /* _OM_CWRAP_H__ */
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
