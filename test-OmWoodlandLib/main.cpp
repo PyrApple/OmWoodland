@@ -38,16 +38,20 @@ OmAudioBuffer getaudioBuffer(int numChannels, int numSamples){
     
     // create test inputs: input buffer
     OmAudioBuffer bufferIn;
-    bufferIn.numChannels = numChannels;
-    bufferIn.numSamples = numSamples;
-    float **data; data = new float*[bufferIn.numChannels];
-    for (int i = 0; i < bufferIn.numChannels; ++i) {
-        data[i] = new float[bufferIn.numSamples];
-        for (int j = 0; j < bufferIn.numSamples; ++j) {
-            data[i][j] = 0.f;
-        }
-    }
-    bufferIn.data = data;
+    bufferIn = OmAudioBufferCreate(numChannels, numSamples);
+    OmAudioBufferClear(bufferIn);
+    
+//    bufferIn.numChannels = numChannels;
+//    bufferIn.numSamples = numSamples;
+//    float **data; data = new float*[bufferIn.numChannels];
+//    for (int i = 0; i < bufferIn.numChannels; ++i) {
+//        data[i] = new float[bufferIn.numSamples];
+//        for (int j = 0; j < bufferIn.numSamples; ++j) {
+//            data[i][j] = 0.f;
+//        }
+//    }
+//    bufferIn.data = data;
+
     return bufferIn;
     
 }

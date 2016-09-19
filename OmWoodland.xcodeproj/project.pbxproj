@@ -10,8 +10,8 @@
 		3540292C1D89AAF800D7A9AE /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3540292B1D89AAF800D7A9AE /* main.cpp */; };
 		358611371D86F69C00889901 /* OmWoodland.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 358611361D86F69C00889901 /* OmWoodland.hpp */; };
 		3586113B1D86F69C00889901 /* OmWoodland.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3586113A1D86F69C00889901 /* OmWoodland.cpp */; };
-		358611441D8801E300889901 /* propagationHandler.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 358611421D8801E300889901 /* propagationHandler.hpp */; };
-		358611451D8801E300889901 /* utils.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 358611431D8801E300889901 /* utils.hpp */; };
+		359A0E411D9019BD00A39E43 /* propagationHandler.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 359A0E3F1D9019BD00A39E43 /* propagationHandler.hpp */; };
+		359A0E421D9019BD00A39E43 /* utils.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 359A0E401D9019BD00A39E43 /* utils.hpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -32,8 +32,8 @@
 		358611331D86F69C00889901 /* libOmWoodland.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = libOmWoodland.dylib; sourceTree = BUILT_PRODUCTS_DIR; };
 		358611361D86F69C00889901 /* OmWoodland.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = OmWoodland.hpp; sourceTree = "<group>"; };
 		3586113A1D86F69C00889901 /* OmWoodland.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = OmWoodland.cpp; sourceTree = "<group>"; };
-		358611421D8801E300889901 /* propagationHandler.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = propagationHandler.hpp; path = ../../omwoodlandOld/src/propagationHandler.hpp; sourceTree = "<group>"; };
-		358611431D8801E300889901 /* utils.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = utils.hpp; path = ../../omwoodlandOld/src/utils.hpp; sourceTree = "<group>"; };
+		359A0E3F1D9019BD00A39E43 /* propagationHandler.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = propagationHandler.hpp; sourceTree = "<group>"; };
+		359A0E401D9019BD00A39E43 /* utils.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = utils.hpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -85,8 +85,8 @@
 			children = (
 				358611361D86F69C00889901 /* OmWoodland.hpp */,
 				3586113A1D86F69C00889901 /* OmWoodland.cpp */,
-				358611421D8801E300889901 /* propagationHandler.hpp */,
-				358611431D8801E300889901 /* utils.hpp */,
+				359A0E3F1D9019BD00A39E43 /* propagationHandler.hpp */,
+				359A0E401D9019BD00A39E43 /* utils.hpp */,
 			);
 			path = OmWoodland;
 			sourceTree = "<group>";
@@ -98,8 +98,8 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				358611451D8801E300889901 /* utils.hpp in Headers */,
-				358611441D8801E300889901 /* propagationHandler.hpp in Headers */,
+				359A0E421D9019BD00A39E43 /* utils.hpp in Headers */,
+				359A0E411D9019BD00A39E43 /* propagationHandler.hpp in Headers */,
 				358611371D86F69C00889901 /* OmWoodland.hpp in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -329,6 +329,7 @@
 				3540292E1D89AAF800D7A9AE /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		3586112E1D86F69C00889901 /* Build configuration list for PBXProject "OmWoodland" */ = {
 			isa = XCConfigurationList;

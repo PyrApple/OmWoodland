@@ -6,17 +6,15 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            shouldBeEnabled = "Yes"
+            shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "../omwoodlandOld/src/propagationHandler.hpp"
-            timestampString = "495628028.850851"
+            timestampString = "495982175.50696"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "137"
-            endingLineNumber = "137"
-            landmarkName = "GrowTreeRecursive( TreeNode* currentTreeNode, std::map&lt;int, NetworkNode&gt;&amp; network )"
-            landmarkType = "5">
+            startingLineNumber = "287"
+            endingLineNumber = "287">
          </BreakpointContent>
       </BreakpointProxy>
    </Breakpoints>

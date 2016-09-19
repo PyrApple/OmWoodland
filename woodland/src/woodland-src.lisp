@@ -81,7 +81,7 @@
   
   (let* ( (c-nodes-pos (allocate-list-of-list nodes-pos))
         )
-        (print "running simulate-propagation")
+        (print "running simulate-propagation...")
         (unwind-protect
           (progn
             ; init c sampling rate
@@ -116,6 +116,8 @@
                                   (fli:dereference (fli:dereference (cffi:foreign-slot-value c-audiobuffer-out '(:struct audiobuffer-struct) 'data) :index c :type :pointer) :index smp :type :float)
                                   )))
 
+                        ; (om-print (format nil "Free pointer ~A in ~A" (spat-processor self) self) "SPAT_DEBUG"))
+                        (om-print (format nil "processed node: ~D/~D" node-id (length nodes-pos) "WOODLAND_DEBUG"))
                         ; collect (clone-object om-sound-out) ; seems to keep same buffer across clones
                         collect (make-om-sound-hard-copy om-sound-out)
 
